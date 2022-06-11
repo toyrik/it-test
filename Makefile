@@ -1,7 +1,7 @@
 up: docker-up
 down: docker-down
 restart: docker-down docker-up
-init: docker-down-clear docker-pull docker-build docker-up
+init: docker-down-clear docker-pull docker-build docker-up bookshelf-init
 
 docker-up:
 	docker-compose up -d
@@ -17,3 +17,8 @@ docker-pull:
 
 docker-build:
 	docker-compose build
+
+bookshelf-init: bookshelf-composer-install
+
+bookshelf-composer-install:
+	docker-compose run --rm php-cli composer install
