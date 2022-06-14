@@ -25,4 +25,3 @@ bookshelf-composer-install:
 
 bookshelf-migrations:
 	docker-compose run --rm php-cli php bin/console doctrine:migrations:migrate --no-interaction
-	docker-compose run --rm php-cli chmod 777 var/data.db
