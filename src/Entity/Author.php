@@ -49,7 +49,8 @@ class Author
 
     public function setFullname(string $fullname): self
     {
-        $this->fulname = $fullname;
+        $this->fullname = $fullname;
+        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
