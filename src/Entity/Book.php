@@ -2,19 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\AuthorRepository;
+use App\Repository\BookRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/** 
- * @ORM\Entity(repositoryClass=AuthorRepository::class)
+/**
+ * @ORM\Entity(repositoryClass=BookRepository::class)
  * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity(fields={"fullname"}, message="This name exists already")
  */
-class Author
+class Book
 {
     /**
      * @ORM\Id
@@ -22,17 +20,18 @@ class Author
      * @ORM\Column(type="integer")
      */
     private $id;
-    /**
-     * @ORM\Column(name="fullname", type="string", length=100, unique=true)
-     * @Assert\NotNull(message="Enter the fullname")
-     * @Assert\NotBlank(message="Enter the fullname")
-     */
-    private $fullname;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Book::class, inversedBy="authors")
+     * @ORM\Column(type="string", length=150)
+     * @Assert\Length(max=150, maxMessage="Title length should be less than 150 character")
      */
-    private $books;
+    private $title;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Author::class, inversedBy="livres")
+     * @Assert\Count(min=1, minMessage="A book must be written by one author at least")
+     */
+    private $authors;
 
     /**
      * @ORM\Column(type="datetime")
@@ -42,11 +41,11 @@ class Author
     /**
      * @ORM\Column(type="datetime")
      */
-    private $updated_at; 
-
+    private $updated_at;
+    
     public function __construct()
     {
-        $this->books = new ArrayCollection();
+        $this->authors = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -54,41 +53,45 @@ class Author
         return $this->id;
     }
 
-    public function getFullName(): string
+    public function getTitle(): ?string
     {
-        return $this->fullname;
+        return $this->title;
     }
 
-    public function setFullname(string $fullname): self
+    public function setTitle(string $title): self
     {
-        $this->fullname = $fullname;
+        $this->title = $title;
+
         return $this;
     }
 
     /**
-     * @return Collection|Book[]
+     * @return Collection|Author[]
      */
-    public function getBooks(): Collection
+    public function getAuthors(): Collection
     {
-        return $this->books;
+        return $this->authors;
     }
 
-    public function addBook(Book $book): self
+    public function addAuthor(Author $author): self
     {
-        if (!$this->books->contains($book)) {
-            $this->books[] = $book;
+        if (!$this->authors->contains($author)) {
+            $this->authors[] = $author;
+            $author->addBook($this);
         }
 
         return $this;
     }
 
-    public function removeBook(Book $book): self
+    public function removeAuthor(Auteur $author): self
     {
-        $this->books->removeElement($book);
+        if ($this->authors->removeElement($author)) {
+            $author->removeBook($this);
+        }
 
         return $this;
     }
-    
+
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->created_at;
@@ -123,10 +126,5 @@ class Author
         if ($this->getCreatedAt() === null) {
             $this->setCreatedAt(new \DateTime('now'));
         }
-    }
-
-    public function __toString() :String 
-    {
-        return $this->getFullName();
     }
 }

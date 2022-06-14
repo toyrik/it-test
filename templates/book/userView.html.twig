@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+{% block title %}Books{% endblock %}
+
+{% block body %}
+    <div>
+        <table>
+        {% for book in books %}
+            <tr>
+                <td>
+                    {{ book.title }}
+                </td>
+                <td>
+                    {% for author in book.authors %}
+                        {{author.fullname}}
+                    {% endfor %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>
+                    Ничего не нашлось
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+
+        {% if books|length>0 %}
+            <div>
+                {{ knp_pagination_render(books) }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
