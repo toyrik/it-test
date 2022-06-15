@@ -2,23 +2,20 @@
 {% block title %}Authors{% endblock %}
 
 {% block body %}
-    <div>
-        <table>
-        {% for author in authors %}
-            <tr>
-                <td>
-                    {{ author.fullname }}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td>
-                    
-                </td>
-            </tr>
-        {% endfor %}
-        </table>
+    <div class="row">
         <h4>Всего найдено {{ totalCount }}</h4>
+        {% for author in authors %}
+            <div class="col-12">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="card-text">
+                            <h5 class="card-title">{{ author.fullname }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+        {% endfor %}
 
         {% if authors|length>0 %}
             <div>

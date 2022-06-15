@@ -2,32 +2,36 @@
 {% block title %}Books{% endblock %}
 
 {% block body %}
-    <div>
-        <table>
+    <div class="row">
         {% for book in books %}
-            <tr>
-                <td>
-                    {{ book.title }}
-                </td>
-                <td>
-                    {% for author in book.authors %}
-                        {{author.fullname}}
-                    {% endfor %}
-                </td>
-            </tr>
+            <div class="col-12 mb-2">
+                <div class="card">
+                    <div class="row">
+                        <div class="card-body">
+                            <div class="card-text">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                            </div>
+                            <div class="card-text">
+                                <ul>
+                                {% for author in book.authors %}
+                                    <li>{{author.fullname}}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% else %}
-            <tr>
-                <td>
-                    Ничего не нашлось
-                </td>
-            </tr>
+            <div class="card">
+                Ничего не нашлось
+            </div>
         {% endfor %}
-        </table>
+    </div>
 
         {% if books|length>0 %}
-            <div>
+            <div class="mt-4">
                 {{ knp_pagination_render(books) }}
             </div>
         {% endif %}
-    </div>
 {% endblock %}
